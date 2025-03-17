@@ -103,18 +103,18 @@ void PurePursuit::callbackOdom(const nav_msgs::Odometry::ConstPtr& msg){
     if (path_msg.poses.size() < 2){
         return;
     }
-    constexpr double Kp = -0.7;
+    constexpr double L = 2.65;
     unsigned int closest = utilities::ppclosetPoint(msg->pose.pose.position, path_msg.poses);
     if (closest >= path_msg.poses.size()-1){
         closest = path_msg.poses.size() - 2;
     }
-    double headingError = yawError(msg->pose.pose.orientation, closest);
+    double headingError = yawError(msg->pose.pose.orientation, closest, msg->pose.pose.position);
     double cte = utilities::crossTrackError(msg->pose.pose.position,
                                             path_msg.poses[closest].pose.position,
                                             path_msg.poses[closest+1].pose.position);
     double vel = utilities::velocity(*msg);
     //double steeringAngle = headingError + atan(Kp*cte / (1 + vel));
-    double steeringAngle = atan2(2*2*sin(headingError),2);//  headingError + atan(Kp*cte / (1 + vel));
+    double steeringAngle = atan2(2*L*sin(headingError),2*vel+1);
 
     LOG_INFO("Steering angle: " << steeringAngle*180/M_PI << "[deg], closest: " << closest << ", cte: " << cte << ", vel: " << vel);
     std_msgs::Float64 temp;
@@ -124,9 +124,10 @@ void PurePursuit::callbackOdom(const nav_msgs::Odometry::ConstPtr& msg){
     throttlePub.publish(temp);
 }
 
-double PurePursuit::yawError(const geometry_msgs::Quaternion& quat, unsigned int closest){
+double PurePursuit::yawError(const geometry_msgs::Quaternion& quat, unsigned int closest,const geometry_msgs::Point& veh){
     double carYaw = utilities::getYaw(quat);
-    double pathYaw = utilities::getPathYaw(closest, path_msg.poses);
-    LOG_INFO("car: " << 180/M_PI*carYaw << ", path: " << 180/M_PI*pathYaw);
-    return utilities::validAngle(pathYaw - carYaw);
+    //double pathYaw = utilities::getPathYaw(closest, path_msg.poses);
+    double car_ldYaw = utilities::getYaw(veh, path_msg.poses[closest].pose.position);
+    LOG_INFO("car: " << 180/M_PI*carYaw << ", car_ld: " << 180/M_PI*car_ldYaw);
+    return utilities::validAngle(car_ldYaw - carYaw);
 }

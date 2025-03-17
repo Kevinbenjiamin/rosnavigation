@@ -11,7 +11,7 @@ Setup
 
 ```terminal
 cd ~catkin_ws/src
-git clone https://github.com/TorBorve/Navigation.git
+git clone https://github.com/Kevinbenjiamin/rosnavigation.git
 cd ..
 catkin build (or catkin_make)
 ```

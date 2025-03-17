@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-    <!-- launch stanley path tracking algorithm -->
-    <node pkg="pathpursuit" type="mainpure" name="pathpursuit" output="screen">
-        <!-- load params from yaml file -->
-        <rosparam command="load" file="$(find pathpursuit)/params/purepursuit.yaml" />
-    </node>
-</launch>

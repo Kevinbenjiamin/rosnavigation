@@ -52,7 +52,7 @@ unsigned int ppclosetPoint(const geometry_msgs::Point& p, const std::vector<geom
             minInd = i;
         }
     }
-    return minInd+5;
+    return minInd+10;
 }
 
 

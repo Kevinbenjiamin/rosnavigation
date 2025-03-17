@@ -87,5 +87,5 @@ class PurePursuit : public PathTracker {
         /// @brief calculates the yaw error between path tanget and vehicle.
         /// @param[in] quat vehicle orientation as Quaternion.
         /// @param[in] closest index of closest point to the vehicle on the path.
-        double yawError(const geometry_msgs::Quaternion& quat, unsigned int closest);
+        double yawError(const geometry_msgs::Quaternion& quat, unsigned int closest,const geometry_msgs::Point& veh);
 };
